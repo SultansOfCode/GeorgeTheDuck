@@ -1,3 +1,5 @@
+"use strict";
+
 const myAddress = '0xF70C40627D4319b91f4b05a97F4aF404052fA1Dd';
 const contractAddress = '0xAC08cbb8b7Ae13B16FfB73019Cb44a7954D89482';
 const abi = [

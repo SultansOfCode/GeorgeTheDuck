@@ -1,30 +1,18 @@
+"use strict";
+
 import Menu from "./scenes/menu.js";
+import Options from "./scenes/options.js";
+import PreLoader from "./scenes/preloader.js";
 import Stage from "./scenes/stage.js";
 
 const config = {
   type: Phaser.AUTO,
   width: 800,
   height: 600,
-  physics: {
-    default: "arcade",
-    arcade: {
-      gravity: {
-        y: 900,
-      },
-      debug: false,
-    },
-  },
+  scene: [PreLoader, Menu, Options, Stage],
 };
 
-const game = new Phaser.Game(config);
-
-game.scene.add("Menu", Menu);
-game.scene.add("Stage", Stage);
-
-game.scene.start("Menu");
+new Phaser.Game(config);
 
 // TODO
-// Transitions between scenes
-// Preload everything to make things smoother
-// Options scene
 // Integrate with smart contract
