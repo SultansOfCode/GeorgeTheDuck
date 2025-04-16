@@ -11,34 +11,34 @@ class PreLoader extends Phaser.Scene {
   }
 
   preload() {
-    this.load.audio("menuBgm", "/snd/menu.mp3");
-    this.load.audio("stageBgm", "/snd/bgm.mp3");
-    this.load.audio("stageHit", "/snd/hit.mp3");
-    this.load.audio("stageJump", "/snd/jump.flac");
-    this.load.audio("stageLanding", "/snd/landing.mp3");
+    this.load.audio("menuBgm", "snd/menu.mp3");
+    this.load.audio("stageBgm", "snd/bgm.mp3");
+    this.load.audio("stageHit", "snd/hit.mp3");
+    this.load.audio("stageJump", "snd/jump.flac");
+    this.load.audio("stageLanding", "snd/landing.mp3");
 
-    this.load.image("menuBackground", "/img/bg.png");
-    this.load.image("menuCheck", "/img/check.png");
-    this.load.image("menuMoney", "/img/money.png");
-    this.load.image("stageClouds", "/img/clouds.png");
-    this.load.image("stageSky", "/img/sky.png");
+    this.load.image("menuBackground", "img/bg.png");
+    this.load.image("menuCheck", "img/check.png");
+    this.load.image("menuMoney", "img/money.png");
+    this.load.image("stageClouds", "img/clouds.png");
+    this.load.image("stageSky", "img/sky.png");
 
     for (const scenarioColor of Globals.scenarioColors) {
       this.load.image(
         `${scenarioColor}Ground`,
-        `/img/ground/${scenarioColor}.png`
+        `img/ground/${scenarioColor}.png`
       );
 
       this.load.image(
         `${scenarioColor}Tree`,
-        `/img/tree/${scenarioColor}.png`
+        `img/tree/${scenarioColor}.png`
       );
     }
 
     for (const georgeColor of Globals.georgeColors) {
       this.load.spritesheet(
         `${georgeColor}George`,
-        `/img/george/${georgeColor}.png`,
+        `img/george/${georgeColor}.png`,
         {
           frameWidth: 64,
           frameHeight: 64,
