@@ -93,9 +93,13 @@ class Options extends Phaser.Scene {
       this.prices[i].setText(`${ethers.formatEther(price.toString())} ETH`);
     }
 
-    Globals.permissions = Number(await this.contractWithSigner.getPermissions().catch(() => 0)) | Globals.defaultPermissions;
+    const permissions = await this.contractWithSigner.getPermissions().catch(() => null);
 
-    this.updatePermissions();
+    if (permissions === null) {
+      return false;
+    }
+
+    Globals.permissions = Number(permissions) | Globals.defaultPermissions;
 
     return true;
   }
@@ -149,8 +153,8 @@ class Options extends Phaser.Scene {
       const owned = i < 8 ? this.ownGeorge(i) : this.ownScenario(i - 8);
 
       this.checks[i].setVisible(owned === true);
-      this.moneys[i].setVisible(owned === false);
-      this.prices[i].setVisible(owned === false);
+      this.moneys[i].setVisible(this.blockchainInitialized === true && owned === false);
+      this.prices[i].setVisible(this.blockchainInitialized === true && owned === false);
     }
   }
 
@@ -164,6 +168,8 @@ class Options extends Phaser.Scene {
 
           this.blockchainMessage = null;
         }
+
+        this.updatePermissions();
       })
       .catch(() => void 0);
 
