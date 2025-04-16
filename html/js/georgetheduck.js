@@ -1,4 +1,4 @@
-import Game from "./scenes/game.js";
+import Stage from "./scenes/stage.js";
 import Globals from "./globals.js";
 
 const config = {
@@ -18,6 +18,6 @@ const config = {
 
 const game = new Phaser.Game(config);
 
-game.scene.add("Game", Game);
+game.scene.add("Stage", Stage);
 
-game.scene.start("Game");
+game.scene.start("Stage");
