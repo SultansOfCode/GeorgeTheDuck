@@ -22,6 +22,7 @@ class Stage extends Phaser.Scene {
   jumpSound = null;
   landingSound = null;
   hitSound = null;
+  bgOverlay = null;
 
   playerStatus = null;
   score = null;
@@ -41,7 +42,7 @@ class Stage extends Phaser.Scene {
           gravity: {
             y: 900,
           },
-          debug: false,
+          debug: Globals.DEBUG,
         },
       },
     });
@@ -171,6 +172,77 @@ class Stage extends Phaser.Scene {
     if (this.score % this.spawnPoints === 0 && Math.random() < this.spawnRate) {
       this.spawnTree();
     }
+
+    if (this.score % Globals.DAY_PHASE_DURATION === 0) {
+      const phase = Math.trunc(this.score / Globals.DAY_PHASE_DURATION) % 4;
+
+      const tweenConfig = {
+        from: 0,
+        to: 1,
+        duration: Globals.DAY_PHASE_TWEEN_DURATION,
+        ease: Phaser.Math.Easing.Sine.InOut,
+        repeat: 0,
+      };
+
+      if (phase === 0) {
+        this.tweens.addCounter({
+          ...tweenConfig,
+
+          onUpdate: tween => {
+            const value = tween.getValue();
+
+            this.bgOverlay.setAlpha(0.6 * (1 - value));
+          }
+        });
+      }
+      else if (phase === 1) {
+        this.bgOverlay
+          .setFillStyle(0xff0000)
+          .setAlpha(0);
+
+        this.tweens.addCounter({
+          ...tweenConfig,
+
+          onUpdate: tween => {
+            const value = tween.getValue();
+
+            this.bgOverlay.setAlpha(0.6 * value);
+          }
+        });
+      }
+      else if (phase === 2) {
+        const colorFrom = Phaser.Display.Color.ValueToColor(0xff0000);
+        const colorTo = Phaser.Display.Color.ValueToColor(0x000000);
+
+        this.tweens.addCounter({
+          ...tweenConfig,
+
+          onUpdate: tween => {
+            const value = tween.getValue();
+            const tint = Phaser.Display.Color.Interpolate.ColorWithColor(colorFrom, colorTo, 1, value);
+            const color = Phaser.Display.Color.ObjectToColor(tint).color;
+
+            this.bgOverlay.setFillStyle(color);
+          }
+        });
+      }
+      else if (phase === 3) {
+        const colorFrom = Phaser.Display.Color.ValueToColor(0x000000);
+        const colorTo = Phaser.Display.Color.ValueToColor(0x000040);
+
+        this.tweens.addCounter({
+          ...tweenConfig,
+
+          onUpdate: tween => {
+            const value = tween.getValue();
+            const tint = Phaser.Display.Color.Interpolate.ColorWithColor(colorFrom, colorTo, 1, value);
+            const color = Phaser.Display.Color.ObjectToColor(tint).color;
+
+            this.bgOverlay.setFillStyle(color).setAlpha(0.2 * value + 0.6);
+          }
+        });
+      }
+    }
   }
 
   create() {
@@ -183,6 +255,8 @@ class Stage extends Phaser.Scene {
     this.hitSound = this.sound.add("stageHit");
 
     this.add.image(400, 300, "stageSky");
+
+    this.bgOverlay = this.add.rectangle(400, 300, 800, 600, 0x000000).setAlpha(0);
 
     this.platforms = this.physics.add.staticGroup();
 

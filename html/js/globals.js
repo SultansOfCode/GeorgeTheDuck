@@ -5,6 +5,11 @@ const SWIPE_UP = 1;
 const SWIPE_RIGHT = 2;
 const SWIPE_DOWN = 3;
 
+const DAY_PHASE_DURATION = 12000;
+const DAY_PHASE_TWEEN_DURATION = 2000;
+
+const DEBUG = false;
+
 const georgeColors = [
   "aqua", "blue", "green", "orange",
   "purple", "red", "tan", "yellow"
@@ -178,6 +183,9 @@ export default {
   SWIPE_UP,
   SWIPE_RIGHT,
   SWIPE_DOWN,
+	DAY_PHASE_DURATION,
+	DAY_PHASE_TWEEN_DURATION,
+	DEBUG,
   georgeColors,
   scenarioColors,
   contractAddress,
