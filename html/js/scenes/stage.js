@@ -55,7 +55,11 @@ class Stage extends Phaser.Scene {
 
     this.timer.paused = true;
 
-    this.trees.children.iterate(tree => tree.setVelocityX(0));
+    this.trees.children.iterate(tree => {
+      tree
+        .setVelocityX(0)
+        .body.enable = false;
+    });
 
     this.player
       .setVelocityX(-50)

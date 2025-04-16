@@ -5,9 +5,8 @@ import Globals from "../globals.js";
 class Options extends Phaser.Scene {
   inputs = null;
   selectionRectangle = null;
-  selectionGeorge = null;
-  selectionScenario = null;
   positions = null;
+  rectangles = null;
   moneys = null;
   checks = null;
   prices = null;
@@ -120,9 +119,13 @@ class Options extends Phaser.Scene {
     if (this.ownGeorge(index) === true) {
       Globals.selectedGeorge = Globals.georgeColors[index];
 
-      const position = this.positions[index];
+      for (let i = 0; i < 8; ++i) {
+        const thickness = i === index ? 2 : 0;
+        const color = i === index ? 0xff0000 : 0x000000;
+        const alpha = i === index ? 1 : 0;
 
-      this.selectionGeorge.setPosition(position.x - 64, position.y - 64);
+        this.rectangles[i].setStrokeStyle(thickness, color, alpha);
+      }
     }
     else {
       this.buyItem(index);
@@ -133,9 +136,13 @@ class Options extends Phaser.Scene {
     if (this.ownScenario(index) === true) {
       Globals.selectedScenario = Globals.scenarioColors[index];
 
-      const position = this.positions[index + 8];
+      for (let i = 0; i < 3; ++i) {
+        const thickness = i === index ? 2 : 0;
+        const color = i === index ? 0xff0000 : 0x000000;
+        const alpha = i === index ? 1 : 0;
 
-      this.selectionScenario.setPosition(position.x - 64, position.y - 64);
+        this.rectangles[i + 8].setStrokeStyle(thickness, color, alpha);
+      }
     }
     else {
       this.buyItem(index + 8);
@@ -174,6 +181,7 @@ class Options extends Phaser.Scene {
     };
 
     this.positions = [];
+    this.rectangles = [];
 
     for (let i = 0; i < 8; ++i) {
       const column = i % 4;
@@ -183,7 +191,9 @@ class Options extends Phaser.Scene {
 
       this.positions.push({ x, y, });
 
-      this.add.rectangle(x, y, 128, 128, 0x181818).alpha = 0.7;
+      const rectangle = this.add.rectangle(x, y, 128, 128, 0x181818).setAlpha(0.7);
+
+      this.rectangles.push(rectangle);
 
       this.add.sprite(x, y, `${Globals.georgeColors[i]}George`)
         .setScale(2)
@@ -198,20 +208,14 @@ class Options extends Phaser.Scene {
 
       this.positions.push({ x, y, });
 
-      this.add.rectangle(x, y, 128, 128, 0x181818).alpha = 0.7;
+      const rectangle = this.add.rectangle(x, y, 128, 128, 0x181818).setAlpha(0.7);
+
+      this.rectangles.push(rectangle);
 
       this.add.sprite(x, y, `${Globals.scenarioColors[i]}Tree`).setScale(2);
     }
 
     this.selectionRectangle = this.add.rectangle(184, 128, 128, 128, 0xffffff);
-
-    this.selectionGeorge = this.add.graphics()
-      .lineStyle(2, 0xff0000, 1)
-      .strokeRect(0, 0, 128, 128);
-
-    this.selectionScenario = this.add.graphics()
-      .lineStyle(2, 0xff0000, 1)
-      .strokeRect(0, 0, 128, 128);
 
     this.moneys = [];
     this.checks = [];
@@ -222,7 +226,7 @@ class Options extends Phaser.Scene {
 
       const money = this.add.image(position.x + 64, position.y - 64, "menuMoney")
         .setScale(0.05)
-        .setRotation(-45);
+        .setRotation(-Math.PI / 4);
 
       this.moneys.push(money);
 
@@ -294,7 +298,7 @@ class Options extends Phaser.Scene {
       this.isClicking = true;
     }
 
-    this.selectionRectangle.alpha = Math.sin(time * 0.005) * 0.05 + 0.25;
+    this.selectionRectangle.setAlpha(Math.sin(time * 0.005) * 0.05 + 0.25);
 
     if (Phaser.Input.Keyboard.JustDown(this.inputs.up) === true || swipeDirection === Globals.SWIPE_UP) {
       if (this.choice < 4) {
