@@ -9,3 +9,18 @@ There are 3 different scenarios: desert, forest and snow. The free and default o
 All the other can be acquired under the options menu, buying them directly from the smart contract
 
 Developed and tested under Chrome with MetaMask extension
+
+## Controls
+
+### Keyboard
+
+- Arrows: navigates in the menu
+- Enter: confirms selection
+- Space: jumps
+- Esc: goes to previous screen
+
+### Mouse/touch
+
+- Swipe: navigates in the menu
+- Swipe left: goes back to menu from game
+- Click: confirms selection in menu / go back to menu when on options
