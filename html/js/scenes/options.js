@@ -159,20 +159,6 @@ class Options extends Phaser.Scene {
   }
 
   create() {
-    this.initializeBlockchain()
-      .then(result => {
-        this.blockchainInitialized = result;
-
-        if (result === true) {
-          this.blockchainMessage.destroy();
-
-          this.blockchainMessage = null;
-        }
-
-        this.updatePermissions();
-      })
-      .catch(() => void 0);
-
     this.add.image(400, 300, "menuBackground")
       .alpha = 0.5;
 
@@ -255,6 +241,20 @@ class Options extends Phaser.Scene {
     this.updatePermissions();
 
     this.blockchainMessage = this.add.text(400, 590, "Blockchain not initialized", { color: "#ff0000", fontFamily: "PressStart2P", fontSize: 10, }).setOrigin(0.5, 1);
+
+    this.initializeBlockchain()
+      .then(result => {
+        this.blockchainInitialized = result;
+
+        if (result === true) {
+          this.blockchainMessage.destroy();
+
+          this.blockchainMessage = null;
+        }
+
+        this.updatePermissions();
+      })
+      .catch(() => void 0);
 
     this.cameras.main.fadeIn(500);
   }
