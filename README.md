@@ -7,3 +7,5 @@ There are 8 different colors: aqua, blue, green, orange, purple, red, tan and ye
 There are 3 different scenarios: desert, forest and snow. The free and default one is snow
 
 All the other can be acquired under the options menu, buying them directly from the smart contract
+
+Developed and tested under Chrome with MetaMask extension
