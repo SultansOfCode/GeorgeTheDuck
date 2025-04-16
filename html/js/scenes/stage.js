@@ -8,7 +8,6 @@ class Stage extends Phaser.Scene {
   static PLAYER_HITTED = 4;
   static PLAYER_DEAD = 5;
 
-  timeStep = null;
   platforms = null;
   clouds1 = null;
   clouds2 = null;
@@ -19,6 +18,10 @@ class Stage extends Phaser.Scene {
   inputs = null;
   text = null;
   timer = null;
+  bgMusic = null;
+  jumpSound = null;
+  landingSound = null;
+  hitSound = null;
 
   playerStatus = null;
   score = 0;
@@ -49,10 +52,28 @@ class Stage extends Phaser.Scene {
         frameHeight: 64,
       }
     );
+
+    this.load.audio("bgm", "/snd/bgm.mp3");
+
+    this.load.audio("jump", "/snd/jump.flac");
+
+    this.load.audio("landing", "/snd/landing.mp3");
+
+    this.load.audio("hit", "/snd/hit.mp3");
   }
   
   create() {
-    this.timeStep = new Phaser.Core.TimeStep();
+    this.bgMusic = this.sound.add("bgm");
+
+    this.bgMusic.loop = true;
+
+    this.bgMusic.play();
+
+    this.jumpSound = this.sound.add("jump");
+
+    this.landingSound = this.sound.add("landing");
+    
+    this.hitSound = this.sound.add("hit");
 
     this.add.image(400, 300, "sky");
 
@@ -238,6 +259,8 @@ class Stage extends Phaser.Scene {
         })
         .anims
           .play("jumping");
+
+      this.jumpSound.play();
     }
     else if (status === Stage.PLAYER_FALLING) {
       this.player
@@ -259,6 +282,8 @@ class Stage extends Phaser.Scene {
         })
         .anims
           .play("landing");
+
+      this.landingSound.play();
     }
     else if (status === Stage.PLAYER_HITTED) {
       this.player.anims.timeScale = 1;
@@ -268,6 +293,8 @@ class Stage extends Phaser.Scene {
         .setOffset(21, 26)
         .anims
           .play("hitted");
+
+      this.hitSound.play();
     }
     else if (status === Stage.PLAYER_DEAD) {
       this.player
