@@ -13,6 +13,3 @@ const config = {
 };
 
 new Phaser.Game(config);
-
-// TODO
-// Integrate with smart contract

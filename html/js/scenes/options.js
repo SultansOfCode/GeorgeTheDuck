@@ -10,14 +10,94 @@ class Options extends Phaser.Scene {
   positions = null;
   moneys = null;
   checks = null;
+  prices = null;
+  blockchainMessage = null;
 
   choice = 0;
+
+  provider = null;
+  signer = null;
+  contract = null;
+  contractWithSigner = null;
+  georgePrice = null;
+  scenarioPrice = null;
+
+  blockchainInitialized = false;
 
   constructor(config) {
     super({
       ...config,
       key: "Options",
     });
+  }
+
+  async buyItem(index) {
+    if (this.blockchainInitialized === false) {
+      return false;
+    }
+
+    const price = index < 8 ? this.georgePrice : this.scenarioPrice;
+    const tx = await this.contractWithSigner.buyItem(index, { value: price });
+
+    await tx.wait();
+
+    return true;
+  }
+
+  async initializeBlockchain() {
+    if (window.ethereum === void 0 || window.ethereum === null) {
+      return false;
+    }
+
+    this.provider = new ethers.BrowserProvider(window.ethereum);
+    this.signer = await this.provider.getSigner();
+
+    const accounts = await this.provider.send('eth_requestAccounts');
+
+    if(accounts === void 0 || accounts === null || accounts.length === 0) {
+      return false;
+    }
+
+    this.contract = new ethers.Contract(Globals.contractAddress, Globals.contractAbi, this.provider);
+    this.contractWithSigner = this.contract.connect(this.signer);
+
+    this.contract.on("ItemBought", async (address, index) => {
+      if (address !== this.signer.address) {
+        return;
+      }
+
+      Globals.permissions = Number(await this.contractWithSigner.getPermissions().catch(() => 0)) | Globals.defaultPermissions;
+
+      this.updatePermissions();
+
+      index = Number(index);
+
+      if (index < 8) {
+        this.selectGeorge(index);
+      }
+      else {
+        this.selectScenario(index - 8);
+      }
+    });
+
+    this.georgePrice = await this.contract.getGeorgePrice().catch(() => null);
+    this.scenarioPrice = await this.contract.getScenarioPrice().catch(() => null);
+
+    if (this.georgePrice === null || this.scenarioPrice === null) {
+      return false;
+    }
+
+    for (let i = 0; i < 11; ++i) {
+      const price = i < 8 ? this.georgePrice : this.scenarioPrice;
+
+      this.prices[i].setText(`${ethers.formatEther(price.toString())} ETH`);
+    }
+
+    Globals.permissions = Number(await this.contractWithSigner.getPermissions().catch(() => 0)) | Globals.defaultPermissions;
+
+    this.updatePermissions();
+
+    return true;
   }
 
   ownGeorge(index) {
@@ -39,7 +119,7 @@ class Options extends Phaser.Scene {
       this.selectionGeorge.setPosition(position.x - 64, position.y - 64);
     }
     else {
-      console.log("NOT OWNED");
+      this.buyItem(index);
     }
   }
 
@@ -52,7 +132,7 @@ class Options extends Phaser.Scene {
       this.selectionScenario.setPosition(position.x - 64, position.y - 64);
     }
     else {
-      console.log("NOT OWNED");
+      this.buyItem(index + 8);
     }
   }
 
@@ -64,7 +144,29 @@ class Options extends Phaser.Scene {
     this.selectionRectangle.setPosition(position.x, position.y);
   }
 
+  updatePermissions() {
+    for (let i = 0; i < 11; ++i) {
+      const owned = i < 8 ? this.ownGeorge(i) : this.ownScenario(i - 8);
+
+      this.checks[i].setVisible(owned === true);
+      this.moneys[i].setVisible(owned === false);
+      this.prices[i].setVisible(owned === false);
+    }
+  }
+
   create() {
+    this.initializeBlockchain()
+      .then(result => {
+        this.blockchainInitialized = result;
+
+        if (result === true) {
+          this.blockchainMessage.destroy();
+
+          this.blockchainMessage = null;
+        }
+      })
+      .catch(() => void 0);
+
     this.add.image(400, 300, "menuBackground")
       .alpha = 0.5;
 
@@ -119,28 +221,34 @@ class Options extends Phaser.Scene {
 
     this.moneys = [];
     this.checks = [];
+    this.prices = [];
 
     for (let i = 0; i < 11; ++i) {
-      const owned = i < 8 ? this.ownGeorge(i) : this.ownScenario(i - 8);
       const position = this.positions[i];
 
       const money = this.add.image(position.x + 64, position.y - 64, "menuMoney")
         .setScale(0.05)
-        .setRotation(-45)
-        .setVisible(owned === false);
+        .setRotation(-45);
 
       this.moneys.push(money);
 
       const check = this.add.image(position.x + 64, position.y - 64, "menuCheck")
-        .setScale(0.05)
-        .setVisible(owned === true);
+        .setScale(0.05);
 
       this.checks.push(check);
+
+      const price = this.add.text(position.x, position.y + 60, "0.000", { fontFamily: "PressStart2P", fontSize: 8, })
+        .setOrigin(0.5, 1);
+
+      this.prices.push(price);
     }
 
     this.selectGeorge(Globals.georgeColors.indexOf(Globals.selectedGeorge));
     this.selectScenario(Globals.scenarioColors.indexOf(Globals.selectedScenario));
     this.setChoice(this.choice);
+    this.updatePermissions();
+
+    this.blockchainMessage = this.add.text(400, 590, "Blockchain not initialized", { color: "#ff0000", fontFamily: "PressStart2P", fontSize: 10, }).setOrigin(0.5, 1);
 
     this.cameras.main.fadeIn(500);
   }
