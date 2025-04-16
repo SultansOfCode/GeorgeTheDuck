@@ -1,5 +1,7 @@
 "use strict";
 
+import Globals from "../globals.js";
+
 class Menu extends Phaser.Scene {
   static MENU_PLAY = 0;
   static MENU_OPTIONS = 1;
@@ -7,6 +9,8 @@ class Menu extends Phaser.Scene {
   arrows = null;
 
   choice = 0;
+
+  isClicking = false;
 
   constructor(config) {
     super({
@@ -50,18 +54,42 @@ class Menu extends Phaser.Scene {
 
     this.setChoice(this.choice);
 
+    this.isClicking = false;
+
     this.cameras.main.fadeIn(500);
   }
 
   update() {
-    if (Phaser.Input.Keyboard.JustDown(this.inputs.up) === true) {
+    let clicked = false;
+    let swipeDirection = null;
+
+    if (this.input.activePointer.isDown === false && this.isClicking === true) {
+      if (Math.abs(this.input.activePointer.upY - this.input.activePointer.downY) >= 50) {
+        if (this.input.activePointer.upY < this.input.activePointer.downY) {
+          swipeDirection = Globals.SWIPE_UP;
+        }
+        else {
+          swipeDirection = Globals.SWIPE_DOWN;
+        }
+      }
+      else {
+        clicked = true;
+      }
+
+      this.isClicking = false;
+    }
+    else if (this.input.activePointer.isDown === true && this.isClicking === false) {
+      this.isClicking = true;
+    }
+
+    if (Phaser.Input.Keyboard.JustDown(this.inputs.up) === true || swipeDirection === Globals.SWIPE_UP) {
       this.setChoice(this.choice - 1);
     }
-    else if (Phaser.Input.Keyboard.JustDown(this.inputs.down) === true) {
+    else if (Phaser.Input.Keyboard.JustDown(this.inputs.down) === true || swipeDirection === Globals.SWIPE_DOWN) {
       this.setChoice(this.choice + 1);
     }
 
-    if (Phaser.Input.Keyboard.JustDown(this.inputs.enter) === true) {
+    if (Phaser.Input.Keyboard.JustDown(this.inputs.enter) === true || clicked === true) {
       this.inputs.enter.enabled = false;
 
       this.cameras.main

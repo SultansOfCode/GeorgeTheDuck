@@ -1,5 +1,10 @@
 "use strict";
 
+const SWIPE_LEFT = 0;
+const SWIPE_UP = 1;
+const SWIPE_RIGHT = 2;
+const SWIPE_DOWN = 3;
+
 const georgeColors = [
   "aqua", "blue", "green", "orange",
   "purple", "red", "tan", "yellow"
@@ -169,6 +174,10 @@ let selectedScenario = "forest";
 let permissions = defaultPermissions;
 
 export default {
+  SWIPE_LEFT,
+  SWIPE_UP,
+  SWIPE_RIGHT,
+  SWIPE_DOWN,
   georgeColors,
   scenarioColors,
   contractAddress,

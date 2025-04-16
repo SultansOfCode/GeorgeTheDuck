@@ -24,6 +24,8 @@ class Options extends Phaser.Scene {
 
   blockchainInitialized = false;
 
+  isClicking = false;
+
   constructor(config) {
     super({
       ...config,
@@ -256,13 +258,45 @@ class Options extends Phaser.Scene {
       })
       .catch(() => void 0);
 
+    this.isClicking = false;
+
     this.cameras.main.fadeIn(500);
   }
 
   update(time) {
+    let clicked = false;
+    let swipeDirection = null;
+
+    if (this.input.activePointer.isDown === false && this.isClicking === true) {
+      if (Math.abs(this.input.activePointer.upY - this.input.activePointer.downY) >= 50) {
+        if (this.input.activePointer.upY < this.input.activePointer.downY) {
+          swipeDirection = Globals.SWIPE_UP;
+        }
+        else {
+          swipeDirection = Globals.SWIPE_DOWN;
+        }
+      }
+      else if (Math.abs(this.input.activePointer.upX - this.input.activePointer.downX) >= 50) {
+        if (this.input.activePointer.upX < this.input.activePointer.downX) {
+          swipeDirection = Globals.SWIPE_LEFT;
+        }
+        else {
+          swipeDirection = Globals.SWIPE_RIGHT;
+        }
+      }
+      else {
+        clicked = true;
+      }
+
+      this.isClicking = false;
+    }
+    else if (this.input.activePointer.isDown === true && this.isClicking === false) {
+      this.isClicking = true;
+    }
+
     this.selectionRectangle.alpha = Math.sin(time * 0.005) * 0.05 + 0.25;
 
-    if (Phaser.Input.Keyboard.JustDown(this.inputs.up) === true) {
+    if (Phaser.Input.Keyboard.JustDown(this.inputs.up) === true || swipeDirection === Globals.SWIPE_UP) {
       if (this.choice < 4) {
         this.setChoice(8);
       }
@@ -270,7 +304,7 @@ class Options extends Phaser.Scene {
         this.setChoice(this.choice - 4);
       }
     }
-    else if (Phaser.Input.Keyboard.JustDown(this.inputs.down) === true) {
+    else if (Phaser.Input.Keyboard.JustDown(this.inputs.down) === true || swipeDirection === Globals.SWIPE_DOWN) {
       if (this.choice < 7) {
         this.setChoice(this.choice + 4);
       }
@@ -281,7 +315,7 @@ class Options extends Phaser.Scene {
         this.setChoice(this.choice + 3);
       }
     }
-    else if (Phaser.Input.Keyboard.JustDown(this.inputs.left) === true) {
+    else if (Phaser.Input.Keyboard.JustDown(this.inputs.left) === true || swipeDirection === Globals.SWIPE_LEFT) {
       if (this.choice % 4 === 0) {
         this.setChoice(this.choice + 3);
       }
@@ -289,7 +323,7 @@ class Options extends Phaser.Scene {
         this.setChoice(this.choice - 1);
       }
     }
-    else if (Phaser.Input.Keyboard.JustDown(this.inputs.right) === true) {
+    else if (Phaser.Input.Keyboard.JustDown(this.inputs.right) === true || swipeDirection === Globals.SWIPE_RIGHT) {
       if ((this.choice + 1) % 4 === 0) {
         this.setChoice(this.choice - 3);
       }
@@ -307,7 +341,7 @@ class Options extends Phaser.Scene {
       }
     }
 
-    if (Phaser.Input.Keyboard.JustDown(this.inputs.escape) === true) {
+    if (Phaser.Input.Keyboard.JustDown(this.inputs.escape) === true || clicked === true) {
       this.inputs.escape.enabled = false;
 
       this.cameras.main

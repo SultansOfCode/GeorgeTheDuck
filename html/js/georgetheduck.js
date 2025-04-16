@@ -12,4 +12,10 @@ const config = {
   scene: [PreLoader, Menu, Options, Stage],
 };
 
-new Phaser.Game(config);
+const gamePlaceholder = document.getElementById("game-placeholder");
+
+gamePlaceholder.addEventListener("click", () => {
+  gamePlaceholder.remove();
+
+  new Phaser.Game(config);
+}, { once: true });

@@ -29,6 +29,8 @@ class Stage extends Phaser.Scene {
   spawnPoints = null;
   spawnRate = null;
 
+  isClicking = false;
+
   constructor(config) {
     super({
       ...config,
@@ -238,12 +240,36 @@ class Stage extends Phaser.Scene {
       loop: true,
     });
 
+    this.isClicking = false;
+
     this.cameras.main.fadeIn(500);
   }
 
   update(_, deltaTime) {
+    let clicked = false;
+    let swipeDirection = null;
+
+    if (this.input.activePointer.isDown === false && this.isClicking === true) {
+      if (Math.abs(this.input.activePointer.upX - this.input.activePointer.downX) >= 50) {
+        if (this.input.activePointer.upX < this.input.activePointer.downX) {
+          swipeDirection = Globals.SWIPE_LEFT;
+        }
+        else {
+          swipeDirection = Globals.SWIPE_RIGHT;
+        }
+      }
+      else {
+        clicked = true;
+      }
+
+      this.isClicking = false;
+    }
+    else if (this.input.activePointer.isDown === true && this.isClicking === false) {
+      this.isClicking = true;
+    }
+
     if (this.playerStatus === Stage.PLAYER_RUNNING) {
-      if (this.inputs.jump.isDown === true && this.player.body.touching.down === true) {
+      if ((this.inputs.jump.isDown === true || this.input.activePointer.isDown === true) && this.player.body.touching.down === true) {
         this.setPlayerStatus(Stage.PLAYER_JUMPING);
       }
     }
@@ -258,7 +284,7 @@ class Stage extends Phaser.Scene {
       }
     }
 
-    if (Phaser.Input.Keyboard.JustDown(this.inputs.escape) === true) {
+    if (Phaser.Input.Keyboard.JustDown(this.inputs.escape) === true || swipeDirection === Globals.SWIPE_LEFT || (this.playerStatus === Stage.PLAYER_DEAD && this.input.activePointer.isDown === true)) {
       this.inputs.escape.enabled = false;
 
       this.cameras.main

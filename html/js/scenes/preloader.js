@@ -11,6 +11,8 @@ class PreLoader extends Phaser.Scene {
   }
 
   preload() {
+    this.add.text(400, 300, "Loading...", { fontFamily: "PressStart2P", fontSize: 36, }).setOrigin(0.5);
+
     this.load.audio("menuBgm", "snd/menu.mp3");
     this.load.audio("stageBgm", "snd/bgm.mp3");
     this.load.audio("stageHit", "snd/hit.mp3");
@@ -90,13 +92,9 @@ class PreLoader extends Phaser.Scene {
         frameRate: 10,
         repeat: 0,
       });
-
-      this.add.text(400, 300, "Click to start", { fontFamily: "PressStart2P", fontSize: 36, }).setOrigin(0.5);
     }
 
-    this.input.once("pointerdown", () => {
-      this.scene.start("Menu");
-    });
+    this.scene.start("Menu");
   }
 }
 
