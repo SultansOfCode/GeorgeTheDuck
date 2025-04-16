@@ -30,22 +30,22 @@ class Stage extends Phaser.Scene {
   spawnRate = 0.25;
 
   preload() {
-    this.load.image("sky", "/img/sky.png");
+    this.load.image("stageSky", "/img/sky.png");
     
-    this.load.image("clouds", "/img/clouds.png");
+    this.load.image("stageClouds", "/img/clouds.png");
   
     this.load.image(
-      "ground",
+      "stageGround",
       `/img/ground/${Globals.selectedScenario}.png`
     );
   
     this.load.image(
-      "tree",
+      "stageTree",
       `/img/tree/${Globals.selectedScenario}.png`
     );
   
     this.load.spritesheet(
-      "george",
+      "stageGeorge",
       `/img/george/${Globals.selectedGeorge}.png`,
       {
         frameWidth: 64,
@@ -53,50 +53,50 @@ class Stage extends Phaser.Scene {
       }
     );
 
-    this.load.audio("bgm", "/snd/bgm.mp3");
+    this.load.audio("stageBgm", "/snd/bgm.mp3");
 
-    this.load.audio("jump", "/snd/jump.flac");
+    this.load.audio("stageJump", "/snd/jump.flac");
 
-    this.load.audio("landing", "/snd/landing.mp3");
+    this.load.audio("stageLanding", "/snd/landing.mp3");
 
-    this.load.audio("hit", "/snd/hit.mp3");
+    this.load.audio("stageHit", "/snd/hit.mp3");
   }
   
   create() {
-    this.bgMusic = this.sound.add("bgm");
+    this.bgMusic = this.sound.add("stageBgm");
 
     this.bgMusic.loop = true;
 
     this.bgMusic.play();
 
-    this.jumpSound = this.sound.add("jump");
+    this.jumpSound = this.sound.add("stageJump");
 
-    this.landingSound = this.sound.add("landing");
+    this.landingSound = this.sound.add("stageLanding");
     
-    this.hitSound = this.sound.add("hit");
+    this.hitSound = this.sound.add("stageHit");
 
-    this.add.image(400, 300, "sky");
+    this.add.image(400, 300, "stageSky");
 
     this.platforms = this.physics.add.staticGroup();
 
-    this.ground = this.add.tileSprite(400, 584, 800, 32, "ground").setScale(2);
+    this.ground = this.add.tileSprite(400, 584, 800, 32, "stageGround").setScale(2);
 
     this.platforms.add(this.ground);
 
-    this.clouds3 = this.add.tileSprite(400, 200, 1600, 400, "clouds");
+    this.clouds3 = this.add.tileSprite(400, 200, 1600, 400, "stageClouds");
     this.clouds3.tilePositionX = Math.ceil(Math.random() * 1600);
-    this.clouds3.tint = (105 << 16) + (105 << 8) + 105;
+    this.clouds3.setTint(0x696969);
 
-    this.clouds2 = this.add.tileSprite(400, 200, 1600, 400, "clouds").setScale(1.5);
+    this.clouds2 = this.add.tileSprite(400, 200, 1600, 400, "stageClouds").setScale(1.5);
     this.clouds2.tilePositionX = Math.ceil(Math.random() * 1600);
-    this.clouds2.tint = (180 << 16) + (180 << 8) + 180;
+    this.clouds2.setTint(0xb4b4b4);
 
-    this.clouds1 = this.add.tileSprite(400, 200, 1600, 400, "clouds").setScale(2);
+    this.clouds1 = this.add.tileSprite(400, 200, 1600, 400, "stageClouds").setScale(2);
     this.clouds1.tilePositionX = Math.ceil(Math.random() * 1600);
 
     this.trees = this.physics.add.group();
   
-    this.player = this.physics.add.sprite(150, 450, "george")
+    this.player = this.physics.add.sprite(150, 450, "stageGeorge")
       .setScale(2)
       .setBounce(0.2)
       .setCollideWorldBounds(true)
@@ -108,42 +108,42 @@ class Stage extends Phaser.Scene {
   
     this.anims.create({
       key: "running",
-      frames: this.anims.generateFrameNumbers("george", { start: 4, end: 7, }),
+      frames: this.anims.generateFrameNumbers("stageGeorge", { start: 4, end: 7, }),
       frameRate: 16,
       repeat: -1,
     });
   
     this.anims.create({
       key: "jumping",
-      frames: this.anims.generateFrameNumbers("george", { start: 8, end: 11, }),
+      frames: this.anims.generateFrameNumbers("stageGeorge", { start: 8, end: 11, }),
       frameRate: 10,
       repeat: 0,
     });
   
     this.anims.create({
       key: "falling",
-      frames: this.anims.generateFrameNumbers("george", { start: 12, end: 12, }),
+      frames: this.anims.generateFrameNumbers("stageGeorge", { start: 12, end: 12, }),
       frameRate: 10,
       repeat: 0,
     });
   
     this.anims.create({
       key: "landing",
-      frames: this.anims.generateFrameNumbers("george", { start: 13, end: 14, }),
+      frames: this.anims.generateFrameNumbers("stageGeorge", { start: 13, end: 14, }),
       frameRate: 10,
       repeat: 0,
     });
   
     this.anims.create({
       key: "hitted",
-      frames: this.anims.generateFrameNumbers("george", { start: 21, end: 22, }),
+      frames: this.anims.generateFrameNumbers("stageGeorge", { start: 21, end: 22, }),
       frameRate: 10,
       repeat: -1,
     });
   
     this.anims.create({
       key: "dead",
-      frames: this.anims.generateFrameNumbers("george", { start: 23, end: 23, }),
+      frames: this.anims.generateFrameNumbers("stageGeorge", { start: 23, end: 23, }),
       frameRate: 10,
       repeat: 0,
     });
@@ -183,7 +183,9 @@ class Stage extends Phaser.Scene {
     }
     else if (this.playerStatus === Stage.PLAYER_DEAD) {
       if (this.inputs.escape.isDown) {
-        console.log("TODO");
+        this.bgMusic.destroy();
+
+        this.scene.start("Menu");
       }
     }
 
@@ -224,7 +226,7 @@ class Stage extends Phaser.Scene {
     }
 
     if (this.score % this.spawnPoints === 0 && Math.random() < this.spawnRate) {
-      this.trees.create(840, 504, "tree")
+      this.trees.create(840, 504, "stageTree")
         .setScale(2)
         .setSize(12, 50, true)
         .setImmovable(true)

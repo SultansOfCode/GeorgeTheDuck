@@ -1,5 +1,5 @@
+import Menu from "./scenes/menu.js";
 import Stage from "./scenes/stage.js";
-import Globals from "./globals.js";
 
 const config = {
   type: Phaser.AUTO,
@@ -18,6 +18,13 @@ const config = {
 
 const game = new Phaser.Game(config);
 
+game.scene.add("Menu", Menu);
 game.scene.add("Stage", Stage);
 
-game.scene.start("Stage");
+game.scene.start("Menu");
+
+// TODO
+// Transitions between scenes
+// Preload everything to make things smoother
+// Options scene
+// Integrate with smart contract
