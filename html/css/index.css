@@ -17,6 +17,7 @@ body {
   align-items: center;
   justify-content: center;
   font-family: "PressStart2P", "Courier New", Courier, monospace;
+  user-select: none;
 }
 
 #title {
