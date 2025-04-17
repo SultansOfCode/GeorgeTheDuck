@@ -25,7 +25,7 @@ class PreLoader extends Phaser.Scene {
     this.load.image("stageClouds", "img/clouds.png");
     this.load.image("stageSky", "img/sky.png");
 
-    for (const scenarioColor of Globals.scenarioColors) {
+    for (const scenarioColor of Globals.SCENARIO_COLORS) {
       this.load.image(
         `${scenarioColor}Ground`,
         `img/ground/${scenarioColor}.png`
@@ -37,7 +37,7 @@ class PreLoader extends Phaser.Scene {
       );
     }
 
-    for (const georgeColor of Globals.georgeColors) {
+    for (const georgeColor of Globals.GEORGE_COLORS) {
       this.load.spritesheet(
         `${georgeColor}George`,
         `img/george/${georgeColor}.png`,
@@ -50,7 +50,7 @@ class PreLoader extends Phaser.Scene {
   }
 
   create() {
-    for (const georgeColor of Globals.georgeColors) {
+    for (const georgeColor of Globals.GEORGE_COLORS) {
       this.anims.create({
         key: `${georgeColor}Running`,
         frames: this.anims.generateFrameNumbers(`${georgeColor}George`, { frames: [4, 5, 6, 7], }),

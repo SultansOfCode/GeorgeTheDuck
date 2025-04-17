@@ -89,25 +89,27 @@ class Menu extends Phaser.Scene {
       this.setChoice(this.choice + 1);
     }
 
-    if (Phaser.Input.Keyboard.JustDown(this.inputs.enter) === true || clicked === true) {
-      this.inputs.enter.enabled = false;
+    if (this.inputs.enter.enabled === true) {
+      if (Phaser.Input.Keyboard.JustDown(this.inputs.enter) === true || clicked === true) {
+        this.inputs.enter.enabled = false;
 
-      this.cameras.main
-        .fadeOut(500)
-        .once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
-          if (this.choice === Menu.MENU_PLAY) {
-            this.sound.stopAll();
+        this.cameras.main
+          .fadeOut(500)
+          .once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+            if (this.choice === Menu.MENU_PLAY) {
+              this.sound.stopAll();
 
-            this.scene
-              .stop()
-              .start("Stage");
-          }
-          else if (this.choice === Menu.MENU_OPTIONS) {
-            this.scene
-              .stop()
-              .start("Options");
-          }
-        });
+              this.scene
+                .stop()
+                .start("Stage");
+            }
+            else if (this.choice === Menu.MENU_OPTIONS) {
+              this.scene
+                .stop()
+                .start("Options");
+            }
+          });
+      }
     }
   }
 }

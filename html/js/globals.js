@@ -10,17 +10,17 @@ const DAY_PHASE_TWEEN_DURATION = 2000;
 
 const DEBUG = false;
 
-const georgeColors = [
+const GEORGE_COLORS = [
   "aqua", "blue", "green", "orange",
   "purple", "red", "tan", "yellow"
 ];
 
-const scenarioColors = [
+const SCENARIO_COLORS = [
   "desert", "forest", "snow"
 ];
 
-const contractAddress = "0x0f45BceF38030F2D53e68dA410d8Bc70dc745189";
-const contractAbi = [
+const CONTRACT_ADDRESS = "0x0f45BceF38030F2D53e68dA410d8Bc70dc745189";
+const CONTRACT_ABI = [
 	{
 		"inputs": [
 			{
@@ -171,12 +171,12 @@ const contractAbi = [
 	}
 ];
 
-const defaultPermissions = 0b01010000000;
+const DEFAULT_PERMISSIONS = 0b01010000000;
 
-let selectedGeorge = "yellow";
-let selectedScenario = "forest";
+let SELECTED_GEORGE = "yellow";
+let SELECTED_SCENARIO = "forest";
 
-let permissions = defaultPermissions;
+let PERMISSIONS = DEFAULT_PERMISSIONS;
 
 export default {
   SWIPE_LEFT,
@@ -186,12 +186,12 @@ export default {
 	DAY_PHASE_DURATION,
 	DAY_PHASE_TWEEN_DURATION,
 	DEBUG,
-  georgeColors,
-  scenarioColors,
-  contractAddress,
-  contractAbi,
-  selectedGeorge,
-  selectedScenario,
-  defaultPermissions,
-  permissions,
+  GEORGE_COLORS,
+  SCENARIO_COLORS,
+  CONTRACT_ADDRESS,
+  CONTRACT_ABI,
+  SELECTED_GEORGE,
+  SELECTED_SCENARIO,
+  DEFAULT_PERMISSIONS,
+  PERMISSIONS,
 };

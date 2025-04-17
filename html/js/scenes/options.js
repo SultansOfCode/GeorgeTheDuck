@@ -46,6 +46,7 @@ class Options extends Phaser.Scene {
   }
 
   async initializeBlockchain() {
+    debugger;
     if (window.ethereum === void 0 || window.ethereum === null) {
       return false;
     }
@@ -59,7 +60,7 @@ class Options extends Phaser.Scene {
       return false;
     }
 
-    this.contract = new ethers.Contract(Globals.contractAddress, Globals.contractAbi, this.provider);
+    this.contract = new ethers.Contract(Globals.CONTRACT_ADDRESS, Globals.CONTRACT_ABI, this.provider);
     this.contractWithSigner = this.contract.connect(this.signer);
 
     this.contract.on("ItemBought", async (address, index) => {
@@ -67,7 +68,7 @@ class Options extends Phaser.Scene {
         return;
       }
 
-      Globals.permissions = Number(await this.contractWithSigner.getPermissions().catch(() => 0)) | Globals.defaultPermissions;
+      Globals.PERMISSIONS = Number(await this.contractWithSigner.getPermissions().catch(() => 0)) | Globals.DEFAULT_PERMISSIONS;
 
       this.updatePermissions();
 
@@ -100,24 +101,24 @@ class Options extends Phaser.Scene {
       return false;
     }
 
-    Globals.permissions = Number(permissions) | Globals.defaultPermissions;
+    Globals.PERMISSIONS = Number(permissions) | Globals.DEFAULT_PERMISSIONS;
 
     return true;
   }
 
   ownGeorge(index) {
-    return (Globals.permissions & (1 << index)) !== 0;
+    return (Globals.PERMISSIONS & (1 << index)) !== 0;
   }
 
   ownScenario(index) {
     index += 8;
 
-    return (Globals.permissions & (1 << index)) !== 0;
+    return (Globals.PERMISSIONS & (1 << index)) !== 0;
   }
 
   selectGeorge(index) {
     if (this.ownGeorge(index) === true) {
-      Globals.selectedGeorge = Globals.georgeColors[index];
+      Globals.SELECTED_GEORGE = Globals.GEORGE_COLORS[index];
 
       for (let i = 0; i < 8; ++i) {
         const thickness = i === index ? 2 : 0;
@@ -134,7 +135,7 @@ class Options extends Phaser.Scene {
 
   selectScenario(index) {
     if (this.ownScenario(index) === true) {
-      Globals.selectedScenario = Globals.scenarioColors[index];
+      Globals.SELECTED_SCENARIO = Globals.SCENARIO_COLORS[index];
 
       for (let i = 0; i < 3; ++i) {
         const thickness = i === index ? 2 : 0;
@@ -195,10 +196,10 @@ class Options extends Phaser.Scene {
 
       this.rectangles.push(rectangle);
 
-      this.add.sprite(x, y, `${Globals.georgeColors[i]}George`)
+      this.add.sprite(x, y, `${Globals.GEORGE_COLORS[i]}George`)
         .setScale(2)
         .anims
-          .play(`${Globals.georgeColors[i]}Running`);
+          .play(`${Globals.GEORGE_COLORS[i]}Running`);
     }
 
     for (let i = 0; i < 3; ++i) {
@@ -212,7 +213,7 @@ class Options extends Phaser.Scene {
 
       this.rectangles.push(rectangle);
 
-      this.add.sprite(x, y, `${Globals.scenarioColors[i]}Tree`).setScale(2);
+      this.add.sprite(x, y, `${Globals.SCENARIO_COLORS[i]}Tree`).setScale(2);
     }
 
     this.selectionRectangle = this.add.rectangle(184, 128, 128, 128, 0xffffff);
@@ -241,8 +242,8 @@ class Options extends Phaser.Scene {
       this.prices.push(price);
     }
 
-    this.selectGeorge(Globals.georgeColors.indexOf(Globals.selectedGeorge));
-    this.selectScenario(Globals.scenarioColors.indexOf(Globals.selectedScenario));
+    this.selectGeorge(Globals.GEORGE_COLORS.indexOf(Globals.SELECTED_GEORGE));
+    this.selectScenario(Globals.SCENARIO_COLORS.indexOf(Globals.SELECTED_SCENARIO));
     this.setChoice(this.choice);
     this.updatePermissions();
 

@@ -9,6 +9,7 @@ const config = {
   type: Phaser.AUTO,
   width: 800,
   height: 600,
+  parent: "container",
   scene: [PreLoader, Menu, Options, Stage],
 };
 
@@ -18,4 +19,11 @@ gamePlaceholder.addEventListener("click", () => {
   gamePlaceholder.remove();
 
   new Phaser.Game(config);
+
+  if (window.innerWidth < 800 || window.innerHeight < 600) {
+    const canvas = document.querySelector("canvas");
+    const ar = window.innerHeight > window.innerWidth ? window.innerWidth / canvas.width : window.innerHeight / canvas.height;
+
+    canvas.style.scale = ar;
+  }
 }, { once: true });

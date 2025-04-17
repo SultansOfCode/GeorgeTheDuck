@@ -79,30 +79,27 @@ class Stage extends Phaser.Scene {
 
     if (status === Stage.PLAYER_RUNNING) {
       this.player
-        .setSize(22, 18)
-        .setOffset(18, 30)
+        .setCircle(10, 20, 28)
         .anims
-          .play(`${Globals.selectedGeorge}Running`);
+          .play(`${Globals.SELECTED_GEORGE}Running`);
     }
     else if (status === Stage.PLAYER_JUMPING) {
       this.player
         .setVelocityY(-500)
-        .setSize(22, 18)
-        .setOffset(21, 28)
+        .setCircle(10, 22, 27)
         .once("animationcomplete", () => {
           this.setPlayerStatus(Stage.PLAYER_FALLING);
         })
         .anims
-          .play(`${Globals.selectedGeorge}Jumping`);
+          .play(`${Globals.SELECTED_GEORGE}Jumping`);
 
       this.jumpSound.play();
     }
     else if (status === Stage.PLAYER_FALLING) {
       this.player
-        .setSize(22, 18)
-        .setOffset(21, 28)
+        .setCircle(11, 20, 26)
         .anims
-          .play(`${Globals.selectedGeorge}Falling`);
+          .play(`${Globals.SELECTED_GEORGE}Falling`);
     }
     else if (status === Stage.PLAYER_LANDING) {
       this.player
@@ -112,7 +109,7 @@ class Stage extends Phaser.Scene {
           this.setPlayerStatus(Stage.PLAYER_RUNNING);
         })
         .anims
-          .play(`${Globals.selectedGeorge}Landing`);
+          .play(`${Globals.SELECTED_GEORGE}Landing`);
 
       this.landingSound.play();
     }
@@ -120,23 +117,22 @@ class Stage extends Phaser.Scene {
       this.player.anims.timeScale = 1;
 
       this.player
-        .setSize(25, 22)
-        .setOffset(21, 26)
+        .setCircle(10, 22, 26)
         .anims
-          .play(`${Globals.selectedGeorge}Hitted`);
+          .play(`${Globals.SELECTED_GEORGE}Hitted`);
 
       this.hitSound.play();
     }
     else if (status === Stage.PLAYER_DEAD) {
       this.player
         .setSize(27, 16)
-        .setOffset(17,32)
+        .setOffset(17, 32)
         .setVelocityX(0)
         .setVelocityY(0)
         .anims
-          .play(`${Globals.selectedGeorge}Dead`);
+          .play(`${Globals.SELECTED_GEORGE}Dead`);
 
-      this.physics.pause();
+      // this.physics.pause();
 
       this.add.text(400, 276, "GAME OVER", { color: "#ff0000", fontFamily: "PressStart2P", fontSize: 48, })
         .setOrigin(0.5);
@@ -147,7 +143,7 @@ class Stage extends Phaser.Scene {
   }
 
   spawnTree() {
-    this.trees.create(840, 536, `${Globals.selectedScenario}Tree`)
+    this.trees.create(840, 536, `${Globals.SELECTED_SCENARIO}Tree`)
       .setScale(Math.random() * 1.5 + 1)
       .setSize(12, 50, true)
       .setOrigin(0.5, 1)
@@ -264,7 +260,7 @@ class Stage extends Phaser.Scene {
 
     this.platforms = this.physics.add.staticGroup();
 
-    this.ground = this.add.tileSprite(400, 600, 800, 32, `${Globals.selectedScenario}Ground`)
+    this.ground = this.add.tileSprite(400, 600, 800, 32, `${Globals.SELECTED_SCENARIO}Ground`)
       .setScale(2)
       .setOrigin(0.5, 1);
 
@@ -286,7 +282,7 @@ class Stage extends Phaser.Scene {
 
     this.trees = this.physics.add.group();
 
-    this.player = this.physics.add.sprite(150, 450, `${Globals.selectedGeorge}George`)
+    this.player = this.physics.add.sprite(150, 450, `${Globals.SELECTED_GEORGE}George`)
       .setScale(2)
       .setBounce(0.2)
       .setDepth(1)
